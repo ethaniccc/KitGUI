@@ -94,9 +94,7 @@ class Main extends PluginBase implements Listener {
 				$p->getLevel()->addSound(new AnvilUseSound($p));
 				$p->sendMessage("§aYou have successfuly obtained the §6PvP §akit!");
 				return true;
-        } else {
-			$p->sendMessage("You do not have enough money to buy this kit.");
-		} elseif($item->getId() == 261){
+        } elseif($item->getId() == 261){
             $mymoney = $this->eco->myMoney($p);
             $pay = 25;
             if($mymoney >= $pay){
@@ -112,9 +110,7 @@ class Main extends PluginBase implements Listener {
 				$p->getLevel()->addSound(new AnvilUseSound($p));
 				$p->sendMessage("§aYou have successfuly obtained the §6Archer §akit!");
             return true;
-        } else {
-			$p->sendMessage("You do not have enough money to buy this kit!");
-		}elseif($item->getId() == 368){
+        }elseif($item->getId() == 368){
             $mymoney = $this->eco->myMoney($p);
             $pay = 250;
             if($mymoney >= $pay){

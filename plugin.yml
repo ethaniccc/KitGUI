@@ -1,0 +1,9 @@
+name: EGUI
+api: 3.9.0
+main: KITGUI\Main
+version: 1.0
+author: HumYaiJunGz
+
+commands:
+ kits:
+  description: Opens the KitGUI

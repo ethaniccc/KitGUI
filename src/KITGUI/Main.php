@@ -47,7 +47,7 @@ class Main extends PluginBase implements Listener {
     public function onSend(Player $p){
         $menu = new InvMenu(InvMenu::TYPE_CHEST);
         $menu->readonly();
-		$menu->setListener([$this, "formenc"]);
+        $menu->setListener([$this, "formenc"]);
         $menu->setName("Kits");
 
         $item = Item::get(267,0,1);
@@ -62,15 +62,15 @@ class Main extends PluginBase implements Listener {
                 "§6The archer kit is a kit for people who prefer good bows than good swords!"
             ]
             );
-        $item2 = Item::get(278,0,1);
+        $item2 = Item::get(368,0,1);
         $item2->setLore(
             [
-                "§6Price§f: §b5000$"
+                "§6For $250, The Ninja kit includes many weapons and things a prepared person might need....."
             ]
             );
             $item->setCustomName("§ePvP");
             $item1->setCustomName("§eArcher");
-            $item2->setCustomName("§aTools");
+            $item2->setCustomName("§aNinja");
 
             $inv = $menu->getInventory();
             $inv->setItem(0, $item);
@@ -82,55 +82,47 @@ class Main extends PluginBase implements Listener {
     public function formenc(Player $p, Item $item){
         if($item->getId() == 267){
             $mymoney = $this->eco->myMoney($p);
-            $pay = 0;
+            $pay = 25;
             if($mymoney >= $pay){
                 $this->eco->reduceMoney($p, $pay);
-				//del was before $event
-             	$this->getServer()->dispatchCommand($item->getPlayer(), "givekit " . $p . "pvp");
+             	$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " iron_sword");
+             	$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " golden_apple" . " 16");
+             	$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " 306");
+             	$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " 307");
+             	$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " 308");
+             	$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " 309");
 				$p->getLevel()->addSound(new AnvilUseSound($p));
-				$p->sendMessage("§aYou have successfuly obtained the PvP kit!");
-            return true;
+				$p->sendMessage("§aYou have successfuly obtained the §6PvP §akit!");
         }elseif($item->getId() == 261){
             $mymoney = $this->eco->myMoney($p);
-            $pay = 0;
+            $pay = 25;
             if($mymoney >= $pay){
                 $this->eco->reduceMoney($p, $pay);
-                $this->eco->reduceMoney($p, $pay);
-             	$this->getServer()->dispatchCommand($item->getPlayer(), "givekit " . $p . "archer");
+             	$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " stone_sword");
+             	$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " bow");
+             	$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " golden_apple" . " 16");
+             	$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " arrow" . " 128");
+             	$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " 302");
+             	$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " 311");
+             	$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " 304");
+             	$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " 305");
 				$p->getLevel()->addSound(new AnvilUseSound($p));
-				$p->sendMessage("§aYou have successfuly obtained the Archer kit!");
+				$p->sendMessage("§aYou have successfuly obtained the §6Archer §akit!");
             return true;
-        }elseif($item->getId() == 278){
+        }elseif($item->getId() == 368){
             $mymoney = $this->eco->myMoney($p);
-            $pay = 5000;
+            $pay = 250;
             if($mymoney >= $pay){
                 $this->eco->reduceMoney($p, $pay);
-                $item = $p->getInventory()->getItemInHand();
-                if($item instanceof Armor or $item instanceof Tool){
-                    $id = $item->getId();
-                    $meta = $item->getDamage();
-                    $p->getInventory()->removeItem(Item::get($id, $meta, 1));
-                    $new = Item::get($id, $meta, 1);
-                    $enc = Enchantment::getEnchantment(mt_rand(15, 18));
-                    $lvl = (mt_rand(1, 5));
-                    $new->addEnchantment(new EnchantmentInstance($enc, (int) $lvl));
-                    if($item->hasCustomName()){
-                        $new->setCustomName($item->getCustomName());
-                    }
-                    if($item->hasEnchantments()){
-                        foreach($item->getEnchantments() as $enchant){
-                            $new->addEnchantment($enchant);
-                        }
-                    }
-                    $p->getInventory()->addItem($new);
-                    $p->getLevel()->addSound(new AnvilUseSound($p));
-                    $p->sendMessage("§aSuccess");
-                }else{
-                    $p->sendMessage("§cCannot enchantment this item.");
-                }
-            }else{
-                $p->sendMessage("§cNot enough money");
-            }
+               $this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " iron_sword");
+               $this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " ender_pearl" . " 4");
+               $this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " snowball" . " 64");
+               $this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " iron_helmet");
+               $this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " iron_chestplate");
+               $this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " iron_leggings");
+               $this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " iron_boots");
+				$p->getLevel()->addSound(new AnvilUseSound($p));
+				$p->sendMessage("§aYou have successfuly obtained the §6Ninja §akit!");
             return true;
         }
         

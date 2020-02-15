@@ -93,7 +93,10 @@ class Main extends PluginBase implements Listener {
              	$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " 309");
 				$p->getLevel()->addSound(new AnvilUseSound($p));
 				$p->sendMessage("§aYou have successfuly obtained the §6PvP §akit!");
-        }elseif($item->getId() == 261){
+				return true;
+        } else {
+			$p->sendMessage("You do not have enough money to buy this kit.");
+		} elseif($item->getId() == 261){
             $mymoney = $this->eco->myMoney($p);
             $pay = 25;
             if($mymoney >= $pay){
@@ -109,11 +112,13 @@ class Main extends PluginBase implements Listener {
 				$p->getLevel()->addSound(new AnvilUseSound($p));
 				$p->sendMessage("§aYou have successfuly obtained the §6Archer §akit!");
             return true;
-        }elseif($item->getId() == 368){
+        } else {
+			$p->sendMessage("You do not have enough money to buy this kit!");
+		}elseif($item->getId() == 368){
             $mymoney = $this->eco->myMoney($p);
             $pay = 250;
             if($mymoney >= $pay){
-                $this->eco->reduceMoney($p, $pay);
+               $this->eco->reduceMoney($p, $pay);
                $this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " iron_sword");
                $this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " ender_pearl" . " 4");
                $this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " snowball" . " 64");
@@ -121,10 +126,12 @@ class Main extends PluginBase implements Listener {
                $this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " iron_chestplate");
                $this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " iron_leggings");
                $this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " iron_boots");
-				$p->getLevel()->addSound(new AnvilUseSound($p));
-				$p->sendMessage("§aYou have successfuly obtained the §6Ninja §akit!");
+			   $p->getLevel()->addSound(new AnvilUseSound($p));
+			   $p->sendMessage("§aYou have successfuly obtained the §6Ninja §akit!");
             return true;
-        }
+        } else {
+			$p->sendMessage("You do not have enough money to buy this kit!");
+		}
         
         
     }

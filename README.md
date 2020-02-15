@@ -8,7 +8,7 @@ Before installing this plugin on your server, please keep this in mind.
 `- The reasons I uploaded this was for someone smarter (then 13 year-old me) to help me fix this and make this into something functional.`
 ## Setting Up The Plugin
 There is no config.yml right now as I don't know how to do that. This is why contribtuions are highly wanted (and highly appreciated as well).
-To set up the plugin, you must have it in folder form. You will also need DevTools for this.
+To customize the plugin for your own use, you must have it in folder form. You will need DevTools for this.
 You may download DevTools from [here.](https://poggit.pmmp.io/p/DevTools)
 
 ## Additonal Dependencies
@@ -19,3 +19,4 @@ None needed right now. The way the players will get the items are through a comm
 The line itself is pretty self-explanitory. The plugin gets the server and runs a command through it. $item is defined in the plugin. $p stands for the player in this case. So the command run in the console will be give (player) (the items that are put in the particular kit)
 
 ###### Help please, I know I'm an idiot <3
+###### Ethaniccc

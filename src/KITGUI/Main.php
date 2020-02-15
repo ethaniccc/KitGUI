@@ -82,31 +82,55 @@ class Main extends PluginBase implements Listener {
     public function formenc(Player $p, Item $item){
         if($item->getId() == 267){
             $mymoney = $this->eco->myMoney($p);
-            $pay = 25;
+            $pay = 0;
             if($mymoney >= $pay){
                 $this->eco->reduceMoney($p, $pay);
-             	$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " iron_sword");
-             	$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " golden_apple" . " 16");
-             	$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " 306");
-             	$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " 307");
-             	$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " 308");
-             	$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " 309");
+				//the following is a test
+				$p->getInventory()->addItem(Item::get(267, 0, 1)->setCustomName("§aPvP Sword"));
+				$p->getInventory()->addItem(Item::get(322, 0, 16)->setCustomName("§6Golden Apple"));
+				$p->getInventory()->addItem(Item::get(306, 0, 1)->setCustomName("§a§lPvP Helmet"));
+				$p->getInventory()->addItem(Item::get(307, 0, 1)->setCustomName("§a§lPvP Chestplate"));
+				$p->getInventory()->addItem(Item::get(308, 0, 1)->setCustomName("§a§lPvP Leggings"));
+				$p->getInventory()->addItem(Item::get(309, 0, 1)->setCustomName("§a§lPvP Boots"));
+				//end of test
+				
+             	//$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " iron_sword");
+             	//$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " golden_apple" . " 16");
+             	//$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " 306");
+             	//$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " 307");
+             	//$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " 308");
+             	//$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " 309");
+				
 				$p->getLevel()->addSound(new AnvilUseSound($p));
 				$p->sendMessage("§aYou have successfuly obtained the §6PvP §akit!");
 				return true;
         } elseif($item->getId() == 261){
             $mymoney = $this->eco->myMoney($p);
-            $pay = 25;
+            $pay = 0;
             if($mymoney >= $pay){
                 $this->eco->reduceMoney($p, $pay);
-             	$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " stone_sword");
-             	$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " bow");
-             	$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " golden_apple" . " 16");
-             	$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " arrow" . " 128");
-             	$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " 302");
-             	$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " 311");
-             	$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " 304");
-             	$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " 305");
+				//start of test
+				$p->getInventory()->addItem(Item::get(272, 0, 1)->setCustomName("§aArcher Knife"));
+				$p->getInventory()->addItem(Item::get(261, 0, 1)->setCustomName("§aArcher Bow"));
+				$p->getInventory()->addItem(Item::get(322, 0, 16)->setCustomName("§6Golden Apple"));
+				$p->getInventory()->addItem(Item::get(262, 0, 64)->setCustomName("§6Arrows"));
+				$p->getInventory()->addItem(Item::get(262, 0, 64)->setCustomName("§6Arrows"));
+				$p->getInventory()->addItem(Item::get(262, 0, 64)->setCustomName("§6Arrows"));
+				$p->getInventory()->addItem(Item::get(302, 0, 1)->setCustomName("§aArcher Helmet"));
+				$p->getInventory()->addItem(Item::get(311, 0, 1)->setCustomName("§aArcher Chestplate"));
+				$p->getInventory()->addItem(Item::get(304, 0, 1)->setCustomName("§aArcher Leggings"));
+				$p->getInventory()->addItem(Item::get(305, 0, 1)->setCustomName("§6Archer Boots"));
+				//end of test
+				
+             	//$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " stone_sword");
+             	//$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " bow");
+             	//$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " golden_apple" . " 16");
+             	//$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " arrow" . " 128");
+             	//$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " 302");
+             	//$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " 311");
+             	//$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " 304");
+             	//$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " 305");
+				
 				$p->getLevel()->addSound(new AnvilUseSound($p));
 				$p->sendMessage("§aYou have successfuly obtained the §6Archer §akit!");
             return true;
@@ -115,19 +139,28 @@ class Main extends PluginBase implements Listener {
             $pay = 250;
             if($mymoney >= $pay){
                $this->eco->reduceMoney($p, $pay);
-               $this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " iron_sword");
-               $this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " ender_pearl" . " 4");
-               $this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " snowball" . " 64");
-               $this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " iron_helmet");
-               $this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " iron_chestplate");
-               $this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " iron_leggings");
-               $this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " iron_boots");
+			   //start of test
+			   $p->getInventory()->addItem(Item::get(267, 0, 1)->setCustomName("§aNinja Sword"));
+			   $p->getInventory()->addItem(Item::get(368, 0, 16)->setCustomName("§6Ninja Pearls"));
+			   $p->getInventory()->addItem(Item::get(332, 0, 16)->setCustomName("§6Ninja Shurikens"));
+			   $p->getInventory()->addItem(Item::get(332, 0, 16)->setCustomName("§6Ninja Shurikens"));
+			   $p->getInventory()->addItem(Item::get(306, 0, 1)->setCustomName("§aNinja Helmet"));
+			   $p->getInventory()->addItem(Item::get(307, 0, 1)->setCustomName("§aNinja Chestplate"));
+			   $p->getInventory()->addItem(Item::get(308, 0, 1)->setCustomName("§aNinja Leggings"));
+			   $p->getInventory()->addItem(Item::get(309, 0, 1)->setCustomName("§aNinja Boots"));
+			   //end of test
+			   
+               //$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " iron_sword");
+               //$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " ender_pearl" . " 4");
+               //$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " snowball" . " 64");
+               //$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " iron_helmet");
+               //$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " iron_chestplate");
+               //$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " iron_leggings");
+               //$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " iron_boots");
 			   $p->getLevel()->addSound(new AnvilUseSound($p));
 			   $p->sendMessage("§aYou have successfuly obtained the §6Ninja §akit!");
             return true;
-        } else {
-			$p->sendMessage("You do not have enough money to buy this kit!");
-		}
+        } 
         
         
     }

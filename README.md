@@ -12,18 +12,10 @@ To set up the plugin, you must have it in folder form. You will also need DevToo
 You may download DevTools from [here.](https://poggit.pmmp.io/p/DevTools)
 
 ## Additonal Dependencies
-Before I got into something truly advanced, I made this plugin, I made it depend on [EasyKits.](https://poggit.pmmp.io/p/EasyKits)
+None needed right now. The way the players will get the items are through a command being run in the console by this:
 
-How would this work then? Well, it was supposed to work like this:
+`$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " iron_sword");`
 
-Every time you click on the selected item, it would run this in console:
-
-`givekit (the player) (kit)`
-
-This is how I'm doing it right now, I'm not sure if I'm doing something wrong, so yeah.
-
-`$this->getServer()->dispatchCommand($item->getPlayer(), "givekit " . $p . " pvp");`
-
-$p stands for the player, and pvp was the kit I orignally created on EasyKits.
+The line itself is pretty self-explanitory. The plugin gets the server and runs a command through it. $item is defined in the plugin. $p stands for the player in this case. So the command run in the console will be give (player) (the items that are put in the particular kit)
 
 ###### Help please, I know I'm an idiot <3

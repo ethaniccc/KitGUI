@@ -1,5 +1,8 @@
 <?php
 
+// Instead of giving the player the armor in their inventory, use getArmorInventory and set(ArmorPeice) to put the armor on the player.
+// This may be an issue if the player wants extra armor in their vault.
+
 namespace KITGUI;
 
 use pocketmine\Server;
@@ -29,8 +32,14 @@ class Main extends PluginBase implements Listener {
     public function onEnable(){
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
         $this->eco = $this->getServer()->getPluginManager()->getPlugin("EconomyAPI");
+		
+		if($this->getDescription()->getAuthors()[0] !== "ethaniccc" or $this->getDescription()->getName() !== "KitGUI"){
+			$this->getLogger()->info("§cSeriously? You thought you could just steal my plugin like that?");
+			$this->getLogger()->info("§cThis is a KitGUI plugin made by ethaniccc, and not anybody else");
+			$this->getLogger()->info("§cEthaniccc will now put your server in a reload loop until proper credits are given.");
+			$this->getServer()->reload();
 
-        if(!InvMenuHandler::isRegistered()){
+       } if(!InvMenuHandler::isRegistered()){
 			InvMenuHandler::register($this);
 		}
     }
@@ -74,16 +83,32 @@ class Main extends PluginBase implements Listener {
                 "§6$250: It's the PvP kit, but better..."
             ]
             );
+		$item4 = Item::get(373,25,1);
+        $item4->setLore(
+            [
+                "§6$300: Become a Witch and use your spells!"
+            ]
+            );
+		$item5 = Item::get(311,0,1);
+        $item5->setLore(
+            [
+                "§6$1000: Beefy "
+            ]
+            );
             $item->setCustomName("§ePvP");
             $item1->setCustomName("§eArcher");
             $item2->setCustomName("§aNinja");
 			$item3->setCustomName("§aPvP+");
+			$item4->setCustomName("§2Witch");
+			$item5->setCustomName("§2Tank");
 
             $inv = $menu->getInventory();
             $inv->setItem(0, $item);
             $inv->setItem(1, $item1);
             $inv->setItem(2, $item2);
 			$inv->setItem(3, $item3);
+			$inv->setItem(4, $item4);
+			$inv->setItem(5, $item5);
             $menu->send($p);
     }
 
@@ -136,6 +161,8 @@ class Main extends PluginBase implements Listener {
                $this->eco->reduceMoney($p, $pay);
 			   //start of test
 			   $p->getInventory()->addItem(Item::get(267, 0, 1)->setCustomName("§aNinja Sword"));
+			   $p->getInventory()->andItem(Item::get(441, 7, 1)->setCustomName("§6Camouflage"));
+			   $p->getInventory()->andItem(Item::get(441, 7, 1)->setCustomName("§6Camouflage"));
 			   $p->getInventory()->addItem(Item::get(368, 0, 16)->setCustomName("§6Ninja Pearls"));
 			   $p->getInventory()->addItem(Item::get(332, 0, 16)->setCustomName("§6Ninja Shurikens"));
 			   $p->getInventory()->addItem(Item::get(332, 0, 16)->setCustomName("§6Ninja Shurikens"));
@@ -169,6 +196,77 @@ class Main extends PluginBase implements Listener {
 					$p->sendMessage("§cYou do not have the funds for the §6PvP+ §ckit!");
 				}
 				return true;
+        } elseif($item->getId() == 373){
+            $mymoney = $this->eco->myMoney($p);
+            $pay = 300;
+            if($mymoney >= $pay){
+               $this->eco->reduceMoney($p, $pay);
+			   //start of test
+			   $p->getInventory()->addItem(Item::get(267, 0, 1)->setCustomName("§aWitch Blade"));
+			   $p->getInventory()->addItem(Item::get(466, 0, 1)->setCustomName("§4Emergency Healing Spell"));
+			   $p->getInventory()->addItem(Item::get(438, 29, 1)->setCustomName("§6Healing Spell"));
+			   $p->getInventory()->addItem(Item::get(438, 29, 1)->setCustomName("§6Healing Spell"));
+			   $p->getInventory()->addItem(Item::get(438, 29, 1)->setCustomName("§6Healing Spell"));
+			   $p->getInventory()->addItem(Item::get(438, 29, 1)->setCustomName("§6Healing Spell"));
+			   $p->getInventory()->addItem(Item::get(438, 25, 1)->setCustomName("§6Poison Spell"));
+			   $p->getInventory()->addItem(Item::get(438, 25, 1)->setCustomName("§6Poison Spell"));
+			   $p->getInventory()->addItem(Item::get(438, 25, 1)->setCustomName("§6Poison Spell"));
+			   //end of the test
+			   $p->getLevel()->addSound(new AnvilUseSound($p));
+			   $p->sendMessage("§aYou have successfuly obtained the §6Witch §akit!");
+			   } else {
+			   	$p->sendMessage("§cYou do not have enough money to buy the §6Witch §ckit!");
+			   }
+            return true;
+        } elseif($item->getId() == 311){
+            $mymoney = $this->eco->myMoney($p);
+            $pay = 600;
+            if($mymoney >= $pay){
+               $this->eco->reduceMoney($p, $pay);
+			   //start of the test
+			   
+			   //$i = Item::get(267, 0, 1);
+			   //$i->setCustomName("Test Blade");
+			   //$e = Enchantment::getEnchantment(12);
+			   //$i->addEnchantment(new EnchantmentInstance($e, 100));
+			   //$p->getInventory()->addItem($i);
+			   
+			   //end of the test
+			   
+			   //NOTE: The enchantments can be as broken as the writer may want them to be.
+			   
+			   //This is the sword for the Tank kit. The variable for the sword is $i and the enchantment $ie
+			   $i = Item::get(268, 0, 1);
+			   $i->setCustomName("§aStick");
+			   $ie = Enchantment::getEnchantment(17);
+			   $i->addEnchantment(new EnchantmentInstance($ie, 1000));
+			   $p->getInventory()->addItem($i);
+			   
+			   $p->getInventory()->addItem(Item::get(322, 0, 32)->setCustomName("§6Golden Apple"));
+			   
+			   //This is the bow for the Tank kit.
+			   
+			   $i1 = Item::get(261, 0, 1);
+			   $i1->setCustomName("§aGun");
+			   $ie1 = Enchantment::getEnchantment(19);
+			   $i1->addEnchantment(new EnchantmentInstance($ie1, 2));
+			   $p->getInventory()->addItem($i1);
+			   
+			   $p->getInventory()->addItem(Item::get(262, 0, 64)->setCustomName("§aBullet"));
+			   $p->getInventory()->addItem(Item::get(262, 0, 64)->setCustomName("§aBullet"));
+			   $p->getInventory()->addItem(Item::get(262, 0, 64)->setCustomName("§aBullet"));
+			   $p->getInventory()->addItem(Item::get(262, 0, 64)->setCustomName("§aBullet"));
+			   $p->getInventory()->addItem(Item::get(262, 0, 64)->setCustomName("§aBullet"));
+			   $p->getArmorInventory()->setHelmet(Item::get(310, 0, 1)->setCustomName("§6Tank Helmet"));
+			   $p->getArmorInventory()->setChestplate(Item::get(311, 0, 1)->setCustomName("§6Tank Chestplate"));
+			   $p->getArmorInventory()->setLeggings(Item::get(312, 0, 1)->setCustomName("§6Tank Leggings"));
+			   $p->getArmorInventory()->setBoots(Item::get(313, 0, 1)->setCustomName("§6Tank Boots")); 
+			   $p->getLevel()->addSound(new AnvilUseSound($p));
+			   $p->sendMessage("§aYou have successfuly obtained the §6Tank §akit!");
+			   } else {
+			   	$p->sendMessage("§cYou do not have enough money to buy the §6Tank §ckit!");
+			   }
+            return true;
         }
         
         

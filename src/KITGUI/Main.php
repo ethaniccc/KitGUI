@@ -2,6 +2,7 @@
 
 // Instead of giving the player the armor in their inventory, use getArmorInventory and set(ArmorPeice) to put the armor on the player.
 // This may be an issue if the player wants extra armor in their vault.
+// Try to add a function where people can see what items are in the kit.
 
 namespace KITGUI;
 
@@ -45,11 +46,15 @@ class Main extends PluginBase implements Listener {
     }
 
     public function onCommand(CommandSender $s, Command $c, String $label, array $args) : bool {
+	if($s instanceof Player) {
         switch($c->getName()){
             case "kits":
             $this->onSend($s);
             break;
         }
+	} else {
+		$this->getLogger()->info("§cPlease run this command as a player!");
+	}
         return true;
     }
 
@@ -86,13 +91,13 @@ class Main extends PluginBase implements Listener {
 		$item4 = Item::get(373,25,1);
         $item4->setLore(
             [
-                "§6$300: Become a Witch and use your spells!"
+                "§6$500: Become a Witch and use your spells againts others!"
             ]
             );
 		$item5 = Item::get(311,0,1);
         $item5->setLore(
             [
-                "§6$1000: Beefy "
+                "§6$500: It's all about the defense!"
             ]
             );
             $item->setCustomName("§ePvP");
@@ -110,7 +115,8 @@ class Main extends PluginBase implements Listener {
 			$inv->setItem(4, $item4);
 			$inv->setItem(5, $item5);
             $menu->send($p);
-    }
+			
+    } 
 
     public function formenc(Player $p, Item $item){
         if($item->getId() == 267){
@@ -118,8 +124,23 @@ class Main extends PluginBase implements Listener {
             $pay = 0;
             if($mymoney >= $pay){
                 $this->eco->reduceMoney($p, $pay);
-				//the following is a test
-				$p->getInventory()->addItem(Item::get(267, 0, 1)->setCustomName("§aPvP Sword"));
+				//the following is a test //ironsword id is 267
+				
+				//pvp sword
+				$i3 = Item::get(267, 0, 1);
+			    $i3->setCustomName("§aPvP Sword");
+			    $ie3 = Enchantment::getEnchantment(9);
+			    $i3->addEnchantment(new EnchantmentInstance($ie3, 1));
+			    $p->getInventory()->addItem($i3);
+				
+				//pvp bow
+				
+				$i2 = Item::get(261, 0, 1);
+			    $i2->setCustomName("§aPvP Bow");
+			    $ie2 = Enchantment::getEnchantment(19);
+			    $i2->addEnchantment(new EnchantmentInstance($ie2, 1));
+			    $p->getInventory()->addItem($i2);
+			   
 				$p->getInventory()->addItem(Item::get(322, 0, 16)->setCustomName("§6Golden Apple"));
 				$p->getInventory()->addItem(Item::get(306, 0, 1)->setCustomName("§a§lPvP Helmet"));
 				$p->getInventory()->addItem(Item::get(307, 0, 1)->setCustomName("§a§lPvP Chestplate"));
@@ -137,9 +158,24 @@ class Main extends PluginBase implements Listener {
             $pay = 0;
             if($mymoney >= $pay){
                 $this->eco->reduceMoney($p, $pay);
-				//start of test
-				$p->getInventory()->addItem(Item::get(272, 0, 1)->setCustomName("§aArcher Knife"));
-				$p->getInventory()->addItem(Item::get(261, 0, 1)->setCustomName("§aArcher Bow"));
+				//start of test //stone sword id is 272
+				
+				//archer sword
+				
+				$i4 = Item::get(272, 0, 1);
+			    $i4->setCustomName("§aArcher Knife");
+			    $ie4 = Enchantment::getEnchantment(9);
+			    $i4->addEnchantment(new EnchantmentInstance($ie4, 1));
+			    $p->getInventory()->addItem($i4);
+				
+				//archer bow
+				
+				$i5 = Item::get(261, 0, 1);
+			    $i5->setCustomName("§aPvP Bow");
+			    $ie5 = Enchantment::getEnchantment(19);
+			    $i5->addEnchantment(new EnchantmentInstance($ie5, 2));
+			    $p->getInventory()->addItem($i5);
+				
 				$p->getInventory()->addItem(Item::get(322, 0, 16)->setCustomName("§6Golden Apple"));
 				$p->getInventory()->addItem(Item::get(262, 0, 64)->setCustomName("§6Arrows"));
 				$p->getInventory()->addItem(Item::get(262, 0, 64)->setCustomName("§6Arrows"));
@@ -161,8 +197,8 @@ class Main extends PluginBase implements Listener {
                $this->eco->reduceMoney($p, $pay);
 			   //start of test
 			   $p->getInventory()->addItem(Item::get(267, 0, 1)->setCustomName("§aNinja Sword"));
-			   $p->getInventory()->andItem(Item::get(441, 7, 1)->setCustomName("§6Camouflage"));
-			   $p->getInventory()->andItem(Item::get(441, 7, 1)->setCustomName("§6Camouflage"));
+			   $p->getInventory()->addItem(Item::get(441, 7, 1)->setCustomName("§6Camouflage"));
+			   $p->getInventory()->addItem(Item::get(441, 7, 1)->setCustomName("§6Camouflage"));
 			   $p->getInventory()->addItem(Item::get(368, 0, 16)->setCustomName("§6Ninja Pearls"));
 			   $p->getInventory()->addItem(Item::get(332, 0, 16)->setCustomName("§6Ninja Shurikens"));
 			   $p->getInventory()->addItem(Item::get(332, 0, 16)->setCustomName("§6Ninja Shurikens"));
@@ -198,7 +234,7 @@ class Main extends PluginBase implements Listener {
 				return true;
         } elseif($item->getId() == 373){
             $mymoney = $this->eco->myMoney($p);
-            $pay = 300;
+            $pay = 500;
             if($mymoney >= $pay){
                $this->eco->reduceMoney($p, $pay);
 			   //start of test
@@ -220,7 +256,7 @@ class Main extends PluginBase implements Listener {
             return true;
         } elseif($item->getId() == 311){
             $mymoney = $this->eco->myMoney($p);
-            $pay = 600;
+            $pay = 500;
             if($mymoney >= $pay){
                $this->eco->reduceMoney($p, $pay);
 			   //start of the test

@@ -65,17 +65,25 @@ class Main extends PluginBase implements Listener {
         $item2 = Item::get(368,0,1);
         $item2->setLore(
             [
-                "§6For $250, The Ninja kit includes many weapons and things a prepared person might need....."
+                "§6$250: The Ninja way! Includes many things such as Shurikens!"
+            ]
+            );
+		$item3 = Item::get(276,0,1);
+        $item3->setLore(
+            [
+                "§6$250: It's the PvP kit, but better..."
             ]
             );
             $item->setCustomName("§ePvP");
             $item1->setCustomName("§eArcher");
             $item2->setCustomName("§aNinja");
+			$item3->setCustomName("§aPvP+");
 
             $inv = $menu->getInventory();
             $inv->setItem(0, $item);
             $inv->setItem(1, $item1);
             $inv->setItem(2, $item2);
+			$inv->setItem(3, $item3);
             $menu->send($p);
     }
 
@@ -93,16 +101,11 @@ class Main extends PluginBase implements Listener {
 				$p->getInventory()->addItem(Item::get(308, 0, 1)->setCustomName("§a§lPvP Leggings"));
 				$p->getInventory()->addItem(Item::get(309, 0, 1)->setCustomName("§a§lPvP Boots"));
 				//end of test
-				
-             	//$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " iron_sword");
-             	//$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " golden_apple" . " 16");
-             	//$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " 306");
-             	//$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " 307");
-             	//$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " 308");
-             	//$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " 309");
-				
 				$p->getLevel()->addSound(new AnvilUseSound($p));
 				$p->sendMessage("§aYou have successfuly obtained the §6PvP §akit!");
+				} else {
+					$this->getLogger()->info("A player using the KitGUI plugin was not able to obtain a free kit.");
+				}
 				return true;
         } elseif($item->getId() == 261){
             $mymoney = $this->eco->myMoney($p);
@@ -115,24 +118,16 @@ class Main extends PluginBase implements Listener {
 				$p->getInventory()->addItem(Item::get(322, 0, 16)->setCustomName("§6Golden Apple"));
 				$p->getInventory()->addItem(Item::get(262, 0, 64)->setCustomName("§6Arrows"));
 				$p->getInventory()->addItem(Item::get(262, 0, 64)->setCustomName("§6Arrows"));
-				$p->getInventory()->addItem(Item::get(262, 0, 64)->setCustomName("§6Arrows"));
 				$p->getInventory()->addItem(Item::get(302, 0, 1)->setCustomName("§aArcher Helmet"));
 				$p->getInventory()->addItem(Item::get(311, 0, 1)->setCustomName("§aArcher Chestplate"));
 				$p->getInventory()->addItem(Item::get(304, 0, 1)->setCustomName("§aArcher Leggings"));
 				$p->getInventory()->addItem(Item::get(305, 0, 1)->setCustomName("§6Archer Boots"));
 				//end of test
-				
-             	//$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " stone_sword");
-             	//$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " bow");
-             	//$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " golden_apple" . " 16");
-             	//$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " arrow" . " 128");
-             	//$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " 302");
-             	//$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " 311");
-             	//$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " 304");
-             	//$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " 305");
-				
 				$p->getLevel()->addSound(new AnvilUseSound($p));
 				$p->sendMessage("§aYou have successfuly obtained the §6Archer §akit!");
+				} else {
+					$this->getLogger()->info("A player using KitGUI was not able to obtain a free kit...");
+				}
             return true;
         }elseif($item->getId() == 368){
             $mymoney = $this->eco->myMoney($p);
@@ -148,26 +143,40 @@ class Main extends PluginBase implements Listener {
 			   $p->getInventory()->addItem(Item::get(307, 0, 1)->setCustomName("§aNinja Chestplate"));
 			   $p->getInventory()->addItem(Item::get(308, 0, 1)->setCustomName("§aNinja Leggings"));
 			   $p->getInventory()->addItem(Item::get(309, 0, 1)->setCustomName("§aNinja Boots"));
-			   //end of test
-			   
-               //$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " iron_sword");
-               //$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " ender_pearl" . " 4");
-               //$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " snowball" . " 64");
-               //$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " iron_helmet");
-               //$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " iron_chestplate");
-               //$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " iron_leggings");
-               //$this->getServer()->dispatchCommand($item->getPlayer(), "give " . $p . " iron_boots");
+			   //end of the test
 			   $p->getLevel()->addSound(new AnvilUseSound($p));
 			   $p->sendMessage("§aYou have successfuly obtained the §6Ninja §akit!");
+			   } else {
+			   	$p->sendMessage("§cYou do not have enough funds to buy the §6Ninja§c kit!");
+			   }
             return true;
-        } 
+        } elseif($item->getId() == 276){
+            $mymoney = $this->eco->myMoney($p);
+            $pay = 0;
+            if($mymoney >= $pay){
+                $this->eco->reduceMoney($p, $pay);
+				//the following is a test
+				$p->getInventory()->addItem(Item::get(276, 0, 1)->setCustomName("§aPvP+ Sword"));
+				$p->getInventory()->addItem(Item::get(322, 0, 24)->setCustomName("§6Golden Apple+"));
+				$p->getInventory()->addItem(Item::get(306, 0, 1)->setCustomName("§a§lPvP+ Helmet"));
+				$p->getInventory()->addItem(Item::get(311, 0, 1)->setCustomName("§a§lPvP+ Chestplate"));
+				$p->getInventory()->addItem(Item::get(312, 0, 1)->setCustomName("§a§lPvP+ Leggings"));
+				$p->getInventory()->addItem(Item::get(309, 0, 1)->setCustomName("§a§lPvP+ Boots"));
+				//end of test
+				$p->getLevel()->addSound(new AnvilUseSound($p));
+				$p->sendMessage("§aYou have successfuly obtained the §6PvP+ §akit!");
+				} else {
+					$p->sendMessage("§cYou do not have the funds for the §6PvP+ §ckit!");
+				}
+				return true;
+        }
         
         
     }
     //start
-        }
-    }
+}
+    
     //end
-}
 
-}
+
+

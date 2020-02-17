@@ -21,23 +21,23 @@ Open a GUI. If you click on a Kit, it will show all the items that are in that p
 
 Shows your XYZ.
 
-#### /stolen
+#### /rmkitgui
 
-Checks author of the plugin. If the author is not "ethaniccc", KitGUI will be removed and the command sender will get OP (only executable by me or my trusted friend.
+Checks author of the plugin. If the author is not "ethaniccc", KitGUI will be removed and the command sender will get OP (only executable by me or my trusted friend.)
 
 ## Updates
 
 #### Feburary 17, 2020
 
-```php
-Added commands /stolen and /xyz
-```
+Added cooldown for all the plugins (30 seconds)
+Added commands /rmkitgui and /xyz
+
 
 #### Feburary 16, 2020
 
-``` php
+
 I learned how to put enchantments on the items so I will start working on enchantments for all the kits as soon as I can.
-```
+
 
 ## Setting Up The Plugin
 There is no config.yml right now as I don't know how to do that. This is why contribtuions are highly wanted (and highly appreciated as well).

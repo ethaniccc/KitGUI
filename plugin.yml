@@ -7,9 +7,11 @@ author: ethaniccc
 commands:
  kits:
   description: Opens the KitGUI
- viewkit:
+ seekit:
   description: View contents inside of a kit using a GUI
- guiinfo:
-  description: Plugin credits + more!
+ kitinfo:
+  description: Plugin credits for KitGUI + more!
  xyz:
   description: Get your XYZ
+ rmkitgui:
+  description: Deletes KitGUI if improper credits are given!

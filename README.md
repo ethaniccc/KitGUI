@@ -7,6 +7,8 @@ Before installing this plugin on your server, please keep this in mind.
 
 `- Only customizable through Main.php`
 
+Futhermore, please understand I made this plugin for my own server network, which is why it is not configurable.
+
 ## Commands
 
 #### /kits

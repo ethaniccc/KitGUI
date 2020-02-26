@@ -6,7 +6,9 @@
 // Added /seekit for 2 more kits
 // Added /rmkitgui to remove KitGUI if improper credits are being given
 // Added /kitinfo
-// Updated: 2/17/2020
+
+// Updated: 2/26/2020
+// Updating command /seekit | This will allow for players to see the content inside of a Kit before buying it.
 
 namespace KITGUI;
 
@@ -721,7 +723,7 @@ class Main extends PluginBase implements Listener {
             $menu5->send($p);
 		
         } elseif($item->getId() == 276){
-		$menu6 = new InvMenu(InvMenu::TYPE_CHEST);
+            $menu6 = new InvMenu(InvMenu::TYPE_CHEST);
         $menu6->readonly();
         $menu6->setListener([$this, "pvpkit"]);
         $menu6->setName("Kit: PvP Price: Free");
@@ -799,8 +801,99 @@ class Main extends PluginBase implements Listener {
 			$inv6->setItem(18, $item58);
 			$inv6->setItem(19, $item59);
             $menu6->send($p);
-			
         } elseif($item->getId() == 373){
+        $menu7 = new InvMenu(InvMenu::TYPE_CHEST);
+        $menu7->readonly();
+        $menu7->setListener([$this, "pvpkit"]);
+        $menu7->setName("Kit: Witch");
+		
+		$item60 = Item::get(267,0,1);
+        $item60->setLore(
+            [
+                "§6Weapon for the Witch kit | Enchantments: Sharpness I"
+            ]
+            );
+        $item61 = Item::get(466,0,1);
+        $item61->setLore(
+            [
+                "§6Enchanted Golden Apple for emergencies"
+            ]
+            );
+        $item62 = Item::get(438,29,1);
+        $item62->setLore(
+            [
+                "§6Healing Potion"
+            ]
+            );
+		$item63 = Item::get(438,29,1);
+        $item63->setLore(
+            [
+                "§6Healing Potion"
+            ]
+            );
+		$item64 = Item::get(438,29,1);
+        $item64->setLore(
+            [
+                "§6Healing Potion"
+            ]
+            );
+		$item65 = Item::get(438,29,1);
+        $item65->setLore(
+            [
+                "§6Healing Potion"
+            ]
+            );
+		$item66 = Item::get(438,25,1);
+		$item66->setLore(
+			[
+				"§6Poison Potion"
+			]
+			);
+		$item67 = Item::get(35,14,1);
+		$item67->setLore(
+			[
+				"§6Main Menu for Viewing Kits."
+			]
+			);
+		$item68 = Item::get(438,25,1);
+		$item68->setLore(
+			[
+				"§6Poison Potion"
+			]
+			);
+		$item69 = Item::get(438,35,1);
+		$item69->setLore(
+			[
+				"§6Poison Potion"
+			]
+			);
+			
+		//stop setting lore for items, pretty useless now.
+		$item600 = Item::get(306,0,1);
+		$item601 = Item::get(307,0,1);
+		$item602 = Item::get(308,0,1);
+		$item603 = Item::get(309,0,1);
+		
+		// 0 1 2 3 4 5 6 7 8
+		// 9 10 11 12 13 14 15 16 17
+		// 18 19 20 21 22 23 24 25 26
+			
+		$inv7 = $menu7->getInventory();
+            $inv7->setItem(0, $item60);
+            $inv7->setItem(1, $item61);
+            $inv7->setItem(2, $item62);
+			$inv7->setItem(3, $item63);
+			$inv7->setItem(4, $item64);
+			$inv7->setItem(5, $item65);
+			$inv7->setItem(6, $item66);
+			$inv7->setItem(26, $item67);
+			$inv7->setItem(7, $item68);
+			$inv7->setItem(8, $item69);
+			$inv7->setItem(18, $item600);
+			$inv7->setItem(19, $item601);
+			$inv7->setItem(20, $item602);
+			$inv7->setItem(21, $item603);
+            $menu7->send($p);
 		
         } elseif($item->getId() == 311){
 		
